@@ -8,6 +8,7 @@ class ListingTableViewCell: UITableViewCell {
     @IBOutlet private var subredditLabel: UILabel!
     @IBOutlet private var thumbnailImageView: NetworkImageView!
 
+    @IBOutlet var feedbackLabel: UILabel!
     static var reuseIdentifier: String {
         return "ListingTableViewCell"
     }
@@ -15,6 +16,7 @@ class ListingTableViewCell: UITableViewCell {
     static var nib: UINib {
         return UINib(nibName: "ListingTableViewCell", bundle: nil)
     }
+    
 }
 
 extension ListingTableViewCell: PostDisplayable {
@@ -23,6 +25,7 @@ extension ListingTableViewCell: PostDisplayable {
         configureThumbnailImageView(with: post)
         configureSubredditLabel(with: post)
         configureBodyText(with: post)
+        configureFeedbackLabel(with: post)
     }
 }
 
@@ -44,6 +47,20 @@ private extension ListingTableViewCell {
 
         subredditLabel.isHidden = subredditName.isEmpty
         subredditLabel.text = subredditName.strippedHtml
+    }
+    
+    func configureFeedbackLabel(with post: Post) {
+    
+        let commentNet = CommentNet.shared
+        if commentNet.predict(inputString: post.title) {
+            feedbackLabel.text = "Feedback"
+            feedbackLabel.textColor = .red
+        }
+        else {
+            feedbackLabel.text = "Not Feedback"
+            feedbackLabel.textColor = .red
+        }
+        
     }
 
     func configureBodyText(with post: Post) {
